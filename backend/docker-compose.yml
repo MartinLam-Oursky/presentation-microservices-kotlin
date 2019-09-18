@@ -7,8 +7,8 @@ services:
     ports:
       - 9000:9000
     environment:
-      MINIO_ACCESS_KEY: minioaccesskey
-      MINIO_SECRET_KEY: miniosecretkey
+      - MINIO_SECRET_KEY=${MINIO_SECRET}
+      - MINIO_ACCESS_KEY=${MINIO_KEY}
     command: server /minio-data
   db:
     image: postgres:11.5
@@ -71,6 +71,8 @@ services:
       - ./settings.gradle.kts:/app/settings.gradle.kts:ro
       - ./product:/app/product
     environment:
+      - MINIO_SECRET_KEY=${MINIO_SECRET}
+      - MINIO_ACCESS_KEY=${MINIO_KEY}
       - APP_DEBUG=true
       - APP_PORT=8002
       - APP_DATABASE_HOST=${APP_DATABASE_HOST}
