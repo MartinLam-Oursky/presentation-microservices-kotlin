@@ -26,20 +26,33 @@ public class AuthController {
         val pass: String
     )
     data class SignupResponse(
-        val userId: Long,
-        val accessToken: String
+        val userId: Long?,
+        val accessToken: String?,
+        val error: String?
     )
+
     // curl -X POST http://127.0.0.1:8080/auth/signup -H "Content-Type: application/json" -d '{"user": "test", "pass": "1234"}'
     @CrossOrigin(origins = ["http://localhost:3000"])
     @PostMapping("/signup")
-    fun login(
+    fun signup(
         @RequestBody body: SignupRequest
     ): ResponseEntity<SignupResponse> {
+
+        if(authService.usernameExists((body.user))){
+            return ResponseEntity.status(406).body(SignupResponse(
+                error = "Username already exists.",
+                userId = null,
+                accessToken = null
+            ))
+        }
+
         val userId = authService.signup(body.user, body.pass)
             ?: return ResponseEntity(HttpStatus.UNAUTHORIZED)
+
         return ResponseEntity.ok(SignupResponse(
             userId = userId,
-            accessToken = jwtService.sign(userId, "access")
+            accessToken = jwtService.sign(userId, "access"),
+            error = null
         ))
     }
 
