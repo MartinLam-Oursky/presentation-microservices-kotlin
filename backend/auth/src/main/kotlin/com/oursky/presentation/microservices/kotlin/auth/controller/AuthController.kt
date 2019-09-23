@@ -46,8 +46,9 @@ public class AuthController {
         val pass: String
     )
     data class LoginResponse(
-        val userId: Long,
-        val accessToken: String
+        val userId: Long?,
+        val accessToken: String?,
+        val error: String?
     )
     // curl -X POST http://127.0.0.1:8080/auth/login -H "Content-Type: application/json" -d '{"user": "test", "pass": "1234"}'
     @PostMapping("/login")
@@ -55,10 +56,15 @@ public class AuthController {
         @RequestBody body: LoginRequest
     ): ResponseEntity<LoginResponse> {
         val userId = authService.login(body.user, body.pass)
-            ?: return ResponseEntity(HttpStatus.UNAUTHORIZED)
+            ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(LoginResponse(
+                userId = null,
+                accessToken = null,
+                error = "Incorrect username or password."
+            ))
         return ResponseEntity.ok(LoginResponse(
             userId = userId,
-            accessToken = jwtService.sign(userId, "access")
+            accessToken = jwtService.sign(userId, "access"),
+            error = null
         ))
     }
 
