@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import com.oursky.presentation.microservices.kotlin.product.service.ProductService
 import com.oursky.presentation.microservices.kotlin.product.entity.Product
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import com.oursky.presentation.microservices.kotlin.product.service.JwtService
