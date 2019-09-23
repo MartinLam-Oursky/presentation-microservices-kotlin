@@ -7,7 +7,6 @@ import com.oursky.presentation.microservices.kotlin.auth.service.AuthService
 import com.oursky.presentation.microservices.kotlin.auth.service.JwtService
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.GetMapping
@@ -38,7 +37,7 @@ public class AuthController {
         @RequestBody body: SignupRequest
     ): ResponseEntity<SignupResponse> {
 
-        if( authService.usernameExists((body.user))) {
+        if (authService.usernameExists((body.user))) {
             return ResponseEntity.status(406).body(SignupResponse(
                 error = "Username already exists.",
                 userId = null,
