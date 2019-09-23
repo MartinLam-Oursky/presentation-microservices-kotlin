@@ -20,6 +20,7 @@ val ktlint by configurations.creating
 
 dependencies {
 	ktlint("com.github.shyiko:ktlint:0.31.0")
+	implementation("com.auth0:java-jwt:3.8.1")
 	implementation("io.minio:minio:6.0.10")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
