@@ -17,10 +17,10 @@ class AuthService {
     lateinit var repository: AuthRepository
 
     fun usernameExists(username: String): Boolean {
-        try{
+        try {
             repository.findByUsername(username)
             return true
-        }catch(e: EmptyResultDataAccessException){
+        } catch(e: EmptyResultDataAccessException) {
             return false
         }
     }
