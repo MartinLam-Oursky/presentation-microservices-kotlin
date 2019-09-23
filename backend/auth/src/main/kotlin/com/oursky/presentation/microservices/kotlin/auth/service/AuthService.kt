@@ -16,6 +16,15 @@ class AuthService {
     @Autowired
     lateinit var repository: AuthRepository
 
+    fun usernameExists(username: String): Boolean {
+        try{
+            repository.findByUsername(username)
+            return true
+        }catch(e: EmptyResultDataAccessException){
+            return false
+        }
+    }
+
     fun signup(username: String, password: String): Long? {
         try {
             val hashed = BCryptPasswordEncoder().encode(password)
