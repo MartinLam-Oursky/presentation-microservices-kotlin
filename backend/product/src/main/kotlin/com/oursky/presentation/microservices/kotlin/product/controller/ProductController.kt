@@ -45,7 +45,7 @@ public class ProductController {
         @RequestHeader("authorization") authorization: String
     ): ResponseEntity<AddProductResponse> {
         val jwt = authorization.replace("Bearer ", "", true)
-        val userId = jwtService.verify(jwt)
+        jwtService.verify(jwt)
                 ?: return ResponseEntity(HttpStatus.UNAUTHORIZED)
         val productId = productService.addNewProduct(name, description, price, image)
                 ?: return ResponseEntity(HttpStatus.BAD_REQUEST)
@@ -68,7 +68,7 @@ public class ProductController {
         @RequestHeader("authorization") authorization: String
     ): ResponseEntity<DeleteProductResponse> {
         val jwt = authorization.replace("Bearer ", "", true)
-        val userId = jwtService.verify(jwt)
+        jwtService.verify(jwt)
                 ?: return ResponseEntity(HttpStatus.UNAUTHORIZED)
         return ResponseEntity.ok(DeleteProductResponse(
                 success = productService.deleteProduct(id)
