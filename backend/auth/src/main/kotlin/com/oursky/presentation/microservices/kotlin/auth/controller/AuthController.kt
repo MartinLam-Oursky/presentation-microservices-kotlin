@@ -38,7 +38,7 @@ public class AuthController {
         @RequestBody body: SignupRequest
     ): ResponseEntity<SignupResponse> {
 
-        if(authService.usernameExists((body.user))){
+        if( authService.usernameExists((body.user))) {
             return ResponseEntity.status(406).body(SignupResponse(
                 error = "Username already exists.",
                 userId = null,

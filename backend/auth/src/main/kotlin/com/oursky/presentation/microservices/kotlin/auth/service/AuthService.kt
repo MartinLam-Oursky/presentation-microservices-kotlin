@@ -20,7 +20,7 @@ class AuthService {
         try {
             repository.findByUsername(username)
             return true
-        } catch(e: EmptyResultDataAccessException) {
+        } catch (e: EmptyResultDataAccessException) {
             return false
         }
     }
