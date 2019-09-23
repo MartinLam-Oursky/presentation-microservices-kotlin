@@ -22,11 +22,8 @@ public class ProductController {
     lateinit var productService: ProductService
 
     data class AddProductResponse(
-        val productId: Long
-    )
-
-    data class AddImageResponse(
-        val data: String
+        val productId: Long?,
+        val error: String?
     )
 
     data class AllProductResponse(
@@ -34,7 +31,8 @@ public class ProductController {
     )
 
     data class DeleteProductResponse(
-        val success: Boolean
+        val success: Boolean,
+        val error: String?
     )
 
     @PostMapping("/")
@@ -45,10 +43,21 @@ public class ProductController {
         @RequestParam("description") description: String,
         @RequestParam("price") price: Float
     ): ResponseEntity<AddProductResponse> {
+
+        val jwt = authorization.replace("Bearer ", "", true)
+
+        jwtService.verify(jwt)
+            ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(AddProductResponse(
+                productId = null,
+                error = "Inccorect access token"
+            ))
+
         val productId = productService.addNewProduct(name, description, price, image)
-                ?: return ResponseEntity(HttpStatus.BAD_REQUEST)
+            ?: return ResponseEntity(HttpStatus.BAD_REQUEST)
+
         return ResponseEntity.ok(AddProductResponse(
-                productId = productId
+            productId = productId,
+            error = ""
         ))
     }
 
@@ -64,8 +73,17 @@ public class ProductController {
     fun deleteProduct(
         @PathVariable id: Long
     ): ResponseEntity<DeleteProductResponse> {
+
+        val jwt = authorization.replace("Bearer ", "", true)
+        jwtService.verify(jwt)
+            ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DeleteProductResponse(
+                success = false,
+                error = "Incorrect access token"
+            ))
+
         return ResponseEntity.ok(DeleteProductResponse(
-                success = productService.deleteProduct(id)
+            success = productService.deleteProduct(id),
+            error = ""
         ))
     }
 }
