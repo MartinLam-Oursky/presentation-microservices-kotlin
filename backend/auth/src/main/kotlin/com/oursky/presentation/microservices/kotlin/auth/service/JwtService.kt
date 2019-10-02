@@ -24,10 +24,11 @@ class JwtService {
             .build()
     }
 
-    fun sign(userId: Long, scope: String): String {
+    fun sign(userId: Long, isMerchant: Boolean, scope: String): String {
         val now = System.currentTimeMillis()
         val accessToken = JWT.create()
             .withClaim("user_id", userId)
+            .withClaim("is_merchant", isMerchant)
             .withClaim("scope", scope)
             .withIssuer(jwtIssuer)
             .withIssuedAt(Date(now))
@@ -36,10 +37,10 @@ class JwtService {
         return accessToken
     }
 
-    fun verify(jwt: String): Long? {
+    fun verify(jwt: String): Pair<Long, Boolean>? {
         return try {
             val decoded = jwtVerifier.verify(jwt)
-            decoded.getClaim("user_id").asLong()
+            Pair(decoded.getClaim("user_id").asLong(), decoded.getClaim("is_merchant").asBoolean())
         } catch (e: JWTVerificationException) {
             null
         }

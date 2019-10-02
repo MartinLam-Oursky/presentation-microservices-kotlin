@@ -11,6 +11,9 @@ data class Product(
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
         val id: Long = -1,
 
+    @Column(nullable = false)
+        val ownerID: Long = -1,
+
     @Column(nullable = false, unique = false, length = 256)
         val name: String = "",
 

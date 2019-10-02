@@ -20,9 +20,9 @@ class ProductService {
 
     val minioClient: MinioClient by lazy {
         MinioClient(
-                minioClientEndPoint,
-                System.getenv("MINIO_ACCESS_KEY"),
-                System.getenv("MINIO_SECRET_KEY")
+            minioClientEndPoint,
+            System.getenv("MINIO_ACCESS_KEY"),
+            System.getenv("MINIO_SECRET_KEY")
         )
     }
 
@@ -67,8 +67,34 @@ class ProductService {
         }
     }
 
+    fun updateProduct (
+        productID: Long,
+        name: String,
+        description: String,
+        price: Float,
+        enable: Boolean
+    ): Long? {
+        try {
+            val product = repository.save(
+                Product(
+                    id = productID,
+                    name = name,
+                    description = description,
+                    price = price,
+                    enabled = enable
+                )
+            )
+            return product.id
+        } catch (e: Throwable) {
+            println(e.message)
+            println(e.cause)
+            return null
+        }
+    }
+
     fun addNewProduct(
         name: String,
+        ownerID: Long,
         description: String,
         price: Float,
         image: MultipartFile

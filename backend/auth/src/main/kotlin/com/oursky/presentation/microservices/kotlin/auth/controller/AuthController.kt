@@ -52,7 +52,7 @@ public class MerchantController {
 
         return ResponseEntity.ok(SignupResponse(
             userId = userId,
-            accessToken = jwtService.sign(userId, "access"),
+            accessToken = jwtService.sign(userId, true,  "access"),
             error = null
         ))
     }
@@ -81,7 +81,7 @@ public class MerchantController {
             ))
         return ResponseEntity.ok(LoginResponse(
             userId = userId,
-            accessToken = jwtService.sign(userId, "access"),
+            accessToken = jwtService.sign(userId, true, "access"),
             error = null
         ))
     }
@@ -94,7 +94,8 @@ public class MerchantController {
     }
 
     data class VerifyResponse(
-        val userId: Long
+        val userId: Long,
+        val isMerchant: Boolean
     )
     // curl -X GET http://127.0.0.1:8080/auth/merchant/verify -H "Authorization: Bearer ACCESS_TOKEN"
     @CrossOrigin(origins = ["http://localhost:3000"])
@@ -103,10 +104,11 @@ public class MerchantController {
         @RequestHeader("authorization") authorization: String
     ): ResponseEntity<VerifyResponse> {
         val jwt = authorization.replace("Bearer ", "", true)
-        val userId = jwtService.verify(jwt)
+        val (userId, isMerchant) = jwtService.verify(jwt)
             ?: return ResponseEntity(HttpStatus.UNAUTHORIZED)
         return ResponseEntity.ok(VerifyResponse(
-            userId = userId
+            userId = userId,
+            isMerchant = isMerchant
         ))
     }
 }
@@ -149,7 +151,7 @@ public class UserController {
 
         return ResponseEntity.ok(SignupResponse(
             userId = userId,
-            accessToken = jwtService.sign(userId, "access"),
+            accessToken = jwtService.sign(userId, false, "access"),
             error = null
         ))
     }
@@ -178,7 +180,7 @@ public class UserController {
             ))
         return ResponseEntity.ok(LoginResponse(
             userId = userId,
-            accessToken = jwtService.sign(userId, "access"),
+            accessToken = jwtService.sign(userId, false, "access"),
             error = null
         ))
     }
@@ -191,7 +193,8 @@ public class UserController {
     }
 
     data class VerifyResponse(
-        val userId: Long
+        val userId: Long,
+        val isMerchant: Boolean
     )
     // curl -X GET http://127.0.0.1:8080/auth/user/verify -H "Authorization: Bearer ACCESS_TOKEN"
     @CrossOrigin(origins = ["http://localhost:3000"])
@@ -200,10 +203,11 @@ public class UserController {
         @RequestHeader("authorization") authorization: String
     ): ResponseEntity<VerifyResponse> {
         val jwt = authorization.replace("Bearer ", "", true)
-        val userId = jwtService.verify(jwt)
+        val (userId, isMerchant) = jwtService.verify(jwt)
             ?: return ResponseEntity(HttpStatus.UNAUTHORIZED)
         return ResponseEntity.ok(VerifyResponse(
-            userId = userId
+            userId = userId,
+            isMerchant = isMerchant
         ))
     }
 }

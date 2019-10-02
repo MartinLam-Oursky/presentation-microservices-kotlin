@@ -22,14 +22,14 @@ data class User(
 
 @Entity
 data class Merchant(
-        @Id @GeneratedValue(strategy = GenerationType.AUTO)
-        val id: Long = -1,
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    val id: Long = -1,
 
-        @Column(nullable = false, unique = true, length = 256)
-        val email: String = "",
+    @Column(nullable = false, unique = true, length = 256)
+    val email: String = "",
 
-        @Column(nullable = false, length = 256)
-        val password: String = "",
+    @Column(nullable = false, length = 256)
+    val password: String = "",
 
-        val enabled: Boolean = true
+    val enabled: Boolean = true
 )

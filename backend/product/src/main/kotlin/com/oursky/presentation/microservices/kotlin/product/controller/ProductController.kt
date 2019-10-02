@@ -54,13 +54,20 @@ public class ProductController {
 
         val jwt = authorization.replace("Bearer ", "", true)
 
-        jwtService.verify(jwt)
+        val (userID, isMerchant) = jwtService.verify(jwt)
             ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(AddProductResponse(
                 productId = null,
-                error = "Inccorect access token"
+                error = "Incorrect access token"
             ))
 
-        val productId = productService.addNewProduct(name, description, price, image)
+        if (!isMerchant) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(AddProductResponse(
+                productId = null,
+                error = "Incorrect access token"
+            ))
+        }
+
+        val productId = productService.addNewProduct(name, userID, description, price, image)
             ?: return ResponseEntity(HttpStatus.BAD_REQUEST)
 
         return ResponseEntity.ok(AddProductResponse(
@@ -86,11 +93,18 @@ public class ProductController {
     ): ResponseEntity<DeleteProductResponse> {
 
         val jwt = authorization.replace("Bearer ", "", true)
-        jwtService.verify(jwt)
+        val (_, isMerchant) = jwtService.verify(jwt)
             ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DeleteProductResponse(
                 success = false,
                 error = "Incorrect access token"
             ))
+
+        if (!isMerchant) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DeleteProductResponse(
+                success = false,
+                error = "Incorrect access token"
+            ))
+        }
 
         return ResponseEntity.ok(DeleteProductResponse(
             success = productService.deleteProduct(id),
