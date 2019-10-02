@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import com.oursky.presentation.microservices.kotlin.product.service.JwtService
@@ -38,6 +39,12 @@ public class ProductController {
 
     data class DeleteProductResponse(
         val success: Boolean,
+        val error: String?
+    )
+
+    data class UpdateProductResponse(
+        val success: Boolean,
+        val productID: Long?,
         val error: String?
     )
 
@@ -82,6 +89,44 @@ public class ProductController {
         val data = productService.getAll()
         return ResponseEntity.ok(AllProductResponse(
                 products = data
+        ))
+    }
+
+    @CrossOrigin(origins = ["http://localhost:3000"])
+    @PutMapping("/{id}")
+    fun updateProduct(
+        @PathVariable id: Long,
+        @RequestHeader("authorization") authorization: String,
+        @RequestParam("name") name: String,
+        @RequestParam("description") description: String,
+        @RequestParam("price") price: Float,
+        @RequestParam("enabled") enabled: Boolean
+    ): ResponseEntity<UpdateProductResponse> {
+
+        val jwt = authorization.replace("Bearer ", "", true)
+
+        val (_, isMerchant) = jwtService.verify(jwt)
+            ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UpdateProductResponse(
+                success = false,
+                productID = null,
+                error = "Incorrect access token"
+            ))
+
+        if (!isMerchant) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UpdateProductResponse(
+                success = false,
+                productID = null,
+                error = "Incorrect access token"
+            ))
+        }
+
+        val productId = productService.updateProduct(id, name, description, price, enabled)
+            ?: return ResponseEntity(HttpStatus.BAD_REQUEST)
+
+        return ResponseEntity.ok(UpdateProductResponse(
+            success = productId == id,
+            productID = productId,
+            error = ""
         ))
     }
 
