@@ -7,15 +7,29 @@ import javax.persistence.GenerationType
 import javax.persistence.Column
 
 @Entity
-data class Auth(
+data class User(
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Long = -1,
 
     @Column(nullable = false, unique = true, length = 256)
-    val username: String = "",
+    val email: String = "",
 
     @Column(nullable = false, length = 256)
     val password: String = "",
 
     val enabled: Boolean = true
+)
+
+@Entity
+data class Merchant(
+        @Id @GeneratedValue(strategy = GenerationType.AUTO)
+        val id: Long = -1,
+
+        @Column(nullable = false, unique = true, length = 256)
+        val email: String = "",
+
+        @Column(nullable = false, length = 256)
+        val password: String = "",
+
+        val enabled: Boolean = true
 )
