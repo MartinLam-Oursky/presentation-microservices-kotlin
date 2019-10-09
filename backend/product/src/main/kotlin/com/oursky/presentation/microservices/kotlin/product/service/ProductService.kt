@@ -121,7 +121,8 @@ class ProductService {
                     description = description,
                     price = price,
                     enabled = true,
-                    image = objectName
+                    image = objectName,
+                    ownerID = ownerID
                 )
             )
             return product.id
@@ -135,4 +136,9 @@ class ProductService {
     fun getAll(): MutableIterable<Product> {
         return repository.findAll()
     }
+
+    fun isProductCreatedByThisUser(userid: Long, productID: Long): Boolean {
+        return findById(productID).ownerID == userid
+    }
+
 }

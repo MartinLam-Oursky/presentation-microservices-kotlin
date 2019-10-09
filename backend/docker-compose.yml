@@ -56,6 +56,7 @@ services:
       - APP_DATABASE_PASS=${APP_DATABASE_PASS}
       - APP_DATABASE_DBNAME=${APP_DATABASE_DBNAME}
       - APP_DATABASE_SCHEMA=${APP_DATABASE_SCHEMA}
+      - APP_MERCHANT_JWT_SECRET=${APP_MERCHANT_JWT_SECRET}
   product:
     image: gradle:5.5-jdk8
     working_dir: /app
@@ -82,6 +83,7 @@ services:
       - APP_DATABASE_PASS=${APP_DATABASE_PASS}
       - APP_DATABASE_DBNAME=${APP_DATABASE_DBNAME}
       - APP_DATABASE_SCHEMA=${APP_DATABASE_SCHEMA}
+      - APP_MERCHANT_JWT_SECRET=${APP_MERCHANT_JWT_SECRET}
   app:
     image: gradle:5.5-jdk8
     working_dir: /app

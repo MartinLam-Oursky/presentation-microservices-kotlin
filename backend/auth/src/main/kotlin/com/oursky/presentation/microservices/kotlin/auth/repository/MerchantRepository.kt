@@ -2,9 +2,9 @@ package com.oursky.presentation.microservices.kotlin.auth.repository
 
 import org.springframework.stereotype.Repository
 import org.springframework.data.repository.CrudRepository
-import com.oursky.presentation.microservices.kotlin.auth.entity.Auth
+import com.oursky.presentation.microservices.kotlin.auth.entity.Merchant
 
 @Repository
-interface AuthRepository : CrudRepository <Auth, Long> {
-    fun findByEmail(email: String): Auth
+interface MerchantRepository : CrudRepository <Merchant, Long> {
+    fun findByEmail(email: String): Merchant
 }

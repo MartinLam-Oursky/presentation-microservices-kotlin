@@ -3,8 +3,8 @@ package com.oursky.presentation.microservices.kotlin.auth.controller
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import com.oursky.presentation.microservices.kotlin.auth.service.AuthService
 import com.oursky.presentation.microservices.kotlin.auth.service.JwtService
+import com.oursky.presentation.microservices.kotlin.auth.service.MerchantService
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -14,12 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 
 @RestController
-@RequestMapping("/auth")
-public class AuthController {
-    @Autowired
-    lateinit var authService: AuthService
+@RequestMapping("/auth/merchant")
+public class MerchantController {
+
     @Autowired
     lateinit var jwtService: JwtService
+    @Autowired
+    lateinit var merchantService: MerchantService
 
     data class LoginRequest(
         val email: String,
@@ -30,46 +31,22 @@ public class AuthController {
         val accessToken: String?,
         val error: String?
     )
-    // curl -X POST http://127.0.0.1:8080/auth/login -H "Content-Type: application/json" -d '{"email": "test", "pass": "1234"}'
+    // curl -X POST http://127.0.0.1:8080/auth/merchant/login -H "Content-Type: application/json" -d '{"email": "test", "pass": "1234"}'
     @CrossOrigin(origins = ["http://localhost:3000"])
     @PostMapping("/login")
     fun login(
             @RequestBody body: LoginRequest
     ): ResponseEntity<LoginResponse> {
-        val userId = authService.login(body.email, body.pass)
+        val userId = merchantService.login(body.email, body.pass)
             ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(LoginResponse(
                 userId = null,
                 accessToken = null,
                 error = "Incorrect email or password."
             ))
-    return ResponseEntity.ok(LoginResponse(
+        return ResponseEntity.ok(LoginResponse(
             userId = userId,
-            accessToken = jwtService.sign(userId,  "access"),
+            accessToken = jwtService.merchantSign(userId,  "access"),
             error = null
-        ))
-    }
-
-    // curl -X GET http://127.0.0.1:8080/auth/logout
-    @CrossOrigin(origins = ["http://localhost:3000"])
-    @GetMapping("/logout")
-    fun logout(): ResponseEntity<Void> {
-        return ResponseEntity.ok().build()
-    }
-
-    data class VerifyResponse(
-        val userId: Long
-    )
-    // curl -X GET http://127.0.0.1:8080/auth/verify -H "Authorization: Bearer ACCESS_TOKEN"
-    @CrossOrigin(origins = ["http://localhost:3000"])
-    @GetMapping("/verify")
-    fun verify(
-        @RequestHeader("authorization") authorization: String
-    ): ResponseEntity<VerifyResponse> {
-        val jwt = authorization.replace("Bearer ", "", true)
-        val userId = jwtService.verify(jwt)
-            ?: return ResponseEntity(HttpStatus.UNAUTHORIZED)
-        return ResponseEntity.ok(VerifyResponse(
-            userId = userId
         ))
     }
 
@@ -82,29 +59,51 @@ public class AuthController {
         val accessToken: String?,
         val error: String?
     )
-    // curl -X POST http://127.0.0.1:8080/auth/signup -H "Content-Type: application/json" -d '{"email": "test", "pass": "1234"}'
+    // curl -X POST http://127.0.0.1:8080/auth/merchant/signup -H "Content-Type: application/json" -d '{"email": "test", "pass": "1234"}'
     @CrossOrigin(origins = ["http://localhost:3000"])
     @PostMapping("/signup")
     fun signup(
-            @RequestBody body: SignupRequest
+        @RequestBody body: SignupRequest
     ): ResponseEntity<SignupResponse> {
-
-        if (authService.isEmailExists((body.email))) {
+        if (merchantService.isEmailExists((body.email))) {
             return ResponseEntity.status(406).body(SignupResponse(
-                error = "Username already exists.",
+                error = "Email already exists.",
                 userId = null,
                 accessToken = null
             ))
         }
 
-        val userId = authService.signup(body.email, body.pass, false)
+        val userId = merchantService.signup(body.email, body.pass)
             ?: return ResponseEntity(HttpStatus.UNAUTHORIZED)
 
         return ResponseEntity.ok(SignupResponse(
             userId = userId,
-            accessToken = jwtService.sign(userId, "access"),
+            accessToken = jwtService.merchantSign(userId, "access"),
             error = null
         ))
     }
 
+    // curl -X GET http://127.0.0.1:8080/auth/merchant/logout
+    @CrossOrigin(origins = ["http://localhost:3000"])
+    @GetMapping("/logout")
+    fun logout(): ResponseEntity<Void> {
+        return ResponseEntity.ok().build()
+    }
+
+    data class VerifyResponse(
+        val userId: Long
+    )
+    // curl -X GET http://127.0.0.1:8080/auth/merchant/verify -H "Authorization: Bearer ACCESS_TOKEN"
+    @CrossOrigin(origins = ["http://localhost:3000"])
+    @GetMapping("/verify")
+    fun verify(
+        @RequestHeader("authorization") authorization: String
+    ): ResponseEntity<VerifyResponse> {
+        val jwt = authorization.replace("Bearer ", "", true)
+        val userId = jwtService.merchantVerify(jwt)
+            ?: return ResponseEntity(HttpStatus.UNAUTHORIZED)
+        return ResponseEntity.ok(VerifyResponse(
+            userId = userId
+        ))
+    }
 }

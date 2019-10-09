@@ -12,35 +12,22 @@ import com.auth0.jwt.exceptions.JWTVerificationException
 class JwtService {
     private val log = LoggerFactory.getLogger(this.javaClass.name)
 
-    @Value("\${APP_JWT_SECRET}")
-    private val jwtSecret: String = ""
+    @Value("\${APP_MERCHANT_JWT_SECRET}")
+    private val merchantJwtSecret: String = ""
+
     private val jwtIssuer = "demo"
-    private val jwtAccessLifetime = 10 * 60 // 10 minutes
-    private val jwtRefreshLifetime = 8 * 60 * 60 // 8 hours
-    private val jwtAlgorithm by lazy { Algorithm.HMAC256(jwtSecret) }
-    private val jwtVerifier by lazy {
-        JWT.require(jwtAlgorithm)
-                .withIssuer(jwtIssuer)
-                .build()
+    private val merchantJwtAlgorithm by lazy { Algorithm.HMAC256(merchantJwtSecret) }
+
+    private val merchantJwtVerifier by lazy {
+        JWT.require(merchantJwtAlgorithm)
+            .withIssuer(jwtIssuer)
+            .build()
     }
 
-    fun sign(userId: Long, isMerchant: Boolean, scope: String): String {
-        val now = System.currentTimeMillis()
-        val accessToken = JWT.create()
-                .withClaim("user_id", userId)
-                .withClaim("is_merchant", isMerchant)
-                .withClaim("scope", scope)
-                .withIssuer(jwtIssuer)
-                .withIssuedAt(Date(now))
-                .withExpiresAt(Date(now + (jwtAccessLifetime * 1000)))
-                .sign(jwtAlgorithm)
-        return accessToken
-    }
-
-    fun verify(jwt: String): Pair<Long, Boolean>? {
+    fun merchantVerify(jwt: String): Long? {
         return try {
-            val decoded = jwtVerifier.verify(jwt)
-            Pair(decoded.getClaim("user_id").asLong(), decoded.getClaim("is_merchant").asBoolean())
+            val decoded = merchantJwtVerifier.verify(jwt)
+            decoded.getClaim("user_id").asLong()
         } catch (e: JWTVerificationException) {
             null
         }

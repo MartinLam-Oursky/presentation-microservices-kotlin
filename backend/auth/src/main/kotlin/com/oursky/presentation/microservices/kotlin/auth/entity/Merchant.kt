@@ -8,8 +8,8 @@ import javax.persistence.Table
 import javax.persistence.Column
 
 @Entity
-@Table(name = "auth")
-data class Auth(
+@Table(name = "merchant")
+data class Merchant(
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Long = -1,
 
