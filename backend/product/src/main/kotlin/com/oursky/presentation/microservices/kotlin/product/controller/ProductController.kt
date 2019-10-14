@@ -92,7 +92,7 @@ public class ProductController {
         @RequestParam("name") name: String,
         @RequestParam("description") description: String,
         @RequestParam("price") price: Float,
-        @RequestParam("enabled") enabled: Boolean
+        @RequestParam("enabled", required = false) enabled: Boolean
     ): ResponseEntity<UpdateProductResponse> {
 
         val jwt = authorization.replace("Bearer ", "", true)
@@ -103,6 +103,14 @@ public class ProductController {
                 productID = null,
                 error = "Incorrect access token"
             ))
+
+        if (!productService.isProductExists(id)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UpdateProductResponse(
+                success = false,
+                error = "Product does not exists.",
+                productID = null
+            ))
+        }
 
         if (!productService.isProductCreatedByThisUser(userID, id)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UpdateProductResponse(
@@ -135,6 +143,13 @@ public class ProductController {
                 success = false,
                 error = "Incorrect access token"
             ))
+
+        if (!productService.isProductExists(id)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DeleteProductResponse(
+                success = false,
+                error = "Product does not exists"
+            ))
+        }
 
         if (!productService.isProductCreatedByThisUser(userID, id)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DeleteProductResponse(

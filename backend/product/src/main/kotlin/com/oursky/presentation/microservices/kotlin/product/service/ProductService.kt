@@ -7,6 +7,7 @@ import com.oursky.presentation.microservices.kotlin.product.entity.Product
 import com.oursky.presentation.microservices.kotlin.product.repository.ProductRepository
 import org.springframework.web.multipart.MultipartFile
 import io.minio.MinioClient
+import org.springframework.dao.EmptyResultDataAccessException
 import java.security.MessageDigest
 import java.lang.IllegalArgumentException
 
@@ -58,6 +59,15 @@ class ProductService {
         return repository.findById(id).get()
     }
 
+    fun isProductExists(id: Long): Boolean {
+        return try{
+            repository.findById(id).get()
+            true
+        }catch (e: EmptyResultDataAccessException) {
+            false
+        }
+    }
+
     fun deleteProduct(id: Long): Boolean {
         try {
             repository.deleteById(id)
@@ -69,19 +79,22 @@ class ProductService {
 
     fun updateProduct (
         productID: Long,
-        name: String,
-        description: String,
-        price: Float,
-        enable: Boolean
+        name: String?,
+        description: String?,
+        price: Float?,
+        enable: Boolean?
     ): Long? {
         try {
+            val currentProduct = findById(productID)
             val product = repository.save(
                 Product(
                     id = productID,
-                    name = name,
-                    description = description,
-                    price = price,
-                    enabled = enable
+                    name = name ?: currentProduct.name,
+                    description = description ?: currentProduct.description,
+                    price = price ?: currentProduct.price,
+                    image = currentProduct.image,
+                    ownerID = currentProduct.ownerID,
+                    enabled = enable ?: currentProduct.enabled
                 )
             )
             return product.id
@@ -108,20 +121,25 @@ class ProductService {
             val headerMap: HashMap<String, String> = hashMapOf<String, String>(
                 "Content-Type" to "application/octet-stream"
             )
-            minioClient.putObject(
-                "images",
-                objectName,
-                image.getInputStream(),
-                image.getSize(),
-                headerMap
-            )
+
+            println("\n\n\n\n\n\n\n" + image.isEmpty + "\n\n\n\n\n\n\n\n")
+
+            if (!image.isEmpty) {
+                minioClient.putObject(
+                    "images",
+                    objectName,
+                    image.getInputStream(),
+                    image.getSize(),
+                    headerMap
+                )
+            }
             val product = repository.save(
                 Product(
                     name = name,
                     description = description,
                     price = price,
                     enabled = true,
-                    image = objectName,
+                    image = if (!image.isEmpty) objectName else null,
                     ownerID = ownerID
                 )
             )
