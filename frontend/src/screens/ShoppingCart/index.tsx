@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   List,
   Divider,
@@ -127,13 +128,15 @@ export default function ShoppingCart() {
         </Button>
         <br />
         <br />
-        <Button
-          variant="contained"
-          color="primary"
-          style={{ justifyContent: "center" }}
-        >
-          Checkout
-        </Button>
+        <Link to="/checkout">
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ justifyContent: "center" }}
+          >
+            Checkout
+          </Button>
+        </Link>
       </Paper>
     </Container>
   );
