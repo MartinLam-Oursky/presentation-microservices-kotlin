@@ -1,5 +1,15 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Insert Stripe API Key & Secret to .env
+
+Follow `.env.example` to create `.env` file.
+
+```
+#.env.example file
+STRIPE_API_KEY=your_stripe_api_key
+STRIPE_API_SECRET=your_stripe_api_secret_key
+```
+
 ## Available Scripts
 
 In the project directory, you can run:
