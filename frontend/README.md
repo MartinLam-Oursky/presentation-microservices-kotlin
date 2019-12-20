@@ -4,6 +4,12 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 Follow `.env.example` to create `.env` file.
 
+## Setup Stripe before start
+
+1. Setup Stripe account or business name [here](https://dashboard.stripe.com/account).
+
+2. Enable client-only integration in [dashboard](https://dashboard.stripe.com/account/checkout/settings).
+
 ```
 #.env.example file
 STRIPE_API_KEY=your_stripe_api_key

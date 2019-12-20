@@ -1,59 +1,35 @@
-import React, { FormEvent } from "react";
-import {
-  CardElement,
-  injectStripe,
-  ReactStripeElements,
-} from "react-stripe-elements";
+import React from "react";
+import { injectStripe, ReactStripeElements } from "react-stripe-elements";
 
 import "./PaymentForm.scss";
 
 function PaymentForm(props: ReactStripeElements.InjectedStripeProps) {
-  const handleSubmit = (ev: FormEvent<HTMLFormElement>) => {
-    ev.preventDefault();
+  const handleSubmit = () => {
     if (props.stripe) {
-      props.stripe
-        .createToken()
-        .then((payload: ReactStripeElements.PatchedTokenResponse) => {
-          if (payload.error) {
-            alert(payload.error.message);
-          } else {
-            console.log(payload.token);
-          }
+      window
+        .Stripe("pk_test_zhH6ESOFrEJllkw6M7rt99EX00ESkJjbGs")
+        .redirectToCheckout({
+          items: [
+            {
+              sku: "sku_GOPcNBWwZofkDr",
+              quantity: 1,
+            },
+          ],
+          successUrl: "http://localhost:3000/checkout",
+          cancelUrl: "http://localhost:3000/checkout",
         })
-        .catch((err: Error) => alert(err));
+        .then((a: stripe.StripeRedirectResponse) => {
+          console.log("Done: ", a);
+        })
+        .catch((e: Error) => {
+          console.log("EEERRRR", e);
+        });
     } else {
       console.log("Stripe.js hasn't loaded yet.");
     }
   };
 
-  const createOptions = (fontSize: string) => {
-    return {
-      style: {
-        base: {
-          fontSize,
-          color: "#424770",
-          letterSpacing: "0.025em",
-          fontFamily: "Source Code Pro, monospace",
-          "::placeholder": {
-            color: "#aab7c4",
-          },
-          padding: "0px",
-        },
-        invalid: {
-          color: "#9e2146",
-        },
-      },
-    };
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        <CardElement {...createOptions("13px")} />
-      </label>
-      <button type="submit">Pay</button>
-    </form>
-  );
+  return <button onClick={handleSubmit}>Pay</button>;
 }
 
 export default injectStripe(PaymentForm);

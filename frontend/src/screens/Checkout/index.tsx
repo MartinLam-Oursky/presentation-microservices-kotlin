@@ -55,7 +55,6 @@ export default function Checkout() {
         <CssBaseline />
         <Paper className="MyPaper">
           <Typography variant="h4">Checkout</Typography>
-
           <List>
             {Object.keys(cart).map((val: string) => {
               const product = cart[val];
@@ -116,8 +115,6 @@ export default function Checkout() {
           </List>
           <Typography variant="overline">Total: $HKD {subTotal}</Typography>
           <Divider />
-          <Typography variant="overline">Card Details</Typography>
-          <br />
           <Elements>
             <PaymentForm />
           </Elements>
