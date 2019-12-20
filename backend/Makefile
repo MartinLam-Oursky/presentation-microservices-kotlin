@@ -16,5 +16,5 @@ run:
 
 secret:
 	@curl -s https://raw.githubusercontent.com/oursky/devsecops-secret/master/generate-secret.sh \
-	  | bash -s -- \
-	  -i .env.example -o .env
+        | bash -s -- \
+            -i .env.example .env
