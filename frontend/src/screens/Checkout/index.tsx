@@ -46,15 +46,17 @@ export default function Checkout() {
   }
 
   const handleSubmit = () => {
+    const items: Array<stripe.StripeCheckoutItem> = [];
+    Object.keys(cart).forEach((v: string) => {
+      items.push({
+        sku: cart[v].stripeSKUID,
+        quantity: 1,
+      });
+    });
     window
       .Stripe("pk_test_zhH6ESOFrEJllkw6M7rt99EX00ESkJjbGs")
       .redirectToCheckout({
-        items: [
-          {
-            sku: "sku_GOPcNBWwZofkDr",
-            quantity: 1,
-          },
-        ],
+        items: items,
         successUrl: "http://localhost:3000/checkout",
         cancelUrl: "http://localhost:3000/checkout",
       })
