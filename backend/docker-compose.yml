@@ -72,6 +72,7 @@ services:
       - ./settings.gradle.kts:/app/settings.gradle.kts:ro
       - ./product:/app/product
     environment:
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - MINIO_SECRET_KEY=${MINIO_SECRET}
       - MINIO_ACCESS_KEY=${MINIO_KEY}
       - APP_DEBUG=true

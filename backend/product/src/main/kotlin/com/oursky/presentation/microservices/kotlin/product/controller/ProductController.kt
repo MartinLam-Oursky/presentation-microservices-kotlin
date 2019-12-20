@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import com.oursky.presentation.microservices.kotlin.product.service.JwtService
+import com.oursky.presentation.microservices.kotlin.product.service.StripeService
 
 @RestController
 @RequestMapping("/product")
@@ -27,6 +28,8 @@ public class ProductController {
     lateinit var productService: ProductService
     @Autowired
     lateinit var jwtService: JwtService
+    @Autowired
+    lateinit var stripeService: StripeService
 
     data class AddProductResponse(
         val productId: Long?,
@@ -67,7 +70,11 @@ public class ProductController {
                 error = "Incorrect access token"
             ))
 
-        val productId = productService.addNewProduct(name, userID, description, price, image)
+        val stripeProductID = stripeService.createProduct(name, description)?: return ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
+
+        val skuID = stripeService.createSKU(stripeProductID, name, price)?: return ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
+
+        val productId = productService.addNewProduct(stripeProductID, skuID, name, userID, description, price, image)
             ?: return ResponseEntity(HttpStatus.BAD_REQUEST)
 
         return ResponseEntity.ok(AddProductResponse(

@@ -26,5 +26,11 @@ data class Product(
     @Column(nullable = true)
         val image: String? = "",
 
+    @Column(nullable = false)
+        val stripeProductID: String = "",
+
+    @Column(nullable = false)
+        val stripeSKUID: String = "",
+
     val enabled: Boolean = true
 )

@@ -10,6 +10,7 @@ import io.minio.MinioClient
 import org.springframework.dao.EmptyResultDataAccessException
 import java.security.MessageDigest
 import java.lang.IllegalArgumentException
+import java.util.HashMap
 
 @Service
 class ProductService {
@@ -106,6 +107,8 @@ class ProductService {
     }
 
     fun addNewProduct(
+        stripeProductID: String,
+        stripeSKUID: String,
         name: String,
         ownerID: Long,
         description: String,
@@ -140,7 +143,9 @@ class ProductService {
                     price = price,
                     enabled = true,
                     image = if (!image.isEmpty) objectName else null,
-                    ownerID = ownerID
+                    ownerID = ownerID,
+                    stripeProductID = stripeProductID,
+                    stripeSKUID = stripeSKUID
                 )
             )
             return product.id
