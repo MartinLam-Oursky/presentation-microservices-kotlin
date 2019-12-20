@@ -13,10 +13,10 @@ import {
   Paper,
   CssBaseline,
 } from "@material-ui/core";
-import { StripeProvider, Elements } from "react-stripe-elements";
+import { StripeProvider } from "react-stripe-elements";
 import DeleteIcon from "@material-ui/icons/Delete";
 
-import PaymentForm from "../../components/PaymentForm";
+import "./Checkout.scss";
 import Cart from "../../interfaces/Cart";
 import Loading from "../../components/Loading";
 
@@ -44,6 +44,27 @@ export default function Checkout() {
     setCart(cart);
     setUpdated(updated + 1);
   }
+
+  const handleSubmit = () => {
+    window
+      .Stripe("pk_test_zhH6ESOFrEJllkw6M7rt99EX00ESkJjbGs")
+      .redirectToCheckout({
+        items: [
+          {
+            sku: "sku_GOPcNBWwZofkDr",
+            quantity: 1,
+          },
+        ],
+        successUrl: "http://localhost:3000/checkout",
+        cancelUrl: "http://localhost:3000/checkout",
+      })
+      .then((a: stripe.StripeRedirectResponse) => {
+        console.log("Done: ", a);
+      })
+      .catch((e: Error) => {
+        console.log("EEERRRR", e);
+      });
+  };
 
   let subTotal = 0;
 
@@ -115,9 +136,9 @@ export default function Checkout() {
           </List>
           <Typography variant="overline">Total: $HKD {subTotal}</Typography>
           <Divider />
-          <Elements>
-            <PaymentForm />
-          </Elements>
+          <button onClick={handleSubmit} className="payBtn">
+            Pay
+          </button>
         </Paper>
       </Container>
     </StripeProvider>
