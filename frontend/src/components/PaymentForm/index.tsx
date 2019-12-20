@@ -29,7 +29,11 @@ function PaymentForm(props: ReactStripeElements.InjectedStripeProps) {
     }
   };
 
-  return <button onClick={handleSubmit}>Pay</button>;
+  return (
+    <button onClick={handleSubmit} className="payBtn">
+      Pay
+    </button>
+  );
 }
 
 export default injectStripe(PaymentForm);
