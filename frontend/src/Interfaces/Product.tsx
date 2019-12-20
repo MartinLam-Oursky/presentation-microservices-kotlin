@@ -6,4 +6,6 @@ export default interface Product {
   image: string;
   ownerID: number;
   enabled: boolean;
+  stripeProductID: string;
+  stripeSKUID: string;
 }
