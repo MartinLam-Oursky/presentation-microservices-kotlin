@@ -4,18 +4,16 @@ import com.stripe.Stripe
 import com.stripe.exception.StripeException
 import com.stripe.model.Product
 import com.stripe.model.Sku
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.util.ArrayList
 import java.util.HashMap
 
 @Service
 class StripeService {
-    @Value("\${STRIPE_SECRET_KEY")
-    private val stripeSecretKey: String = ""
+    private val stripeSecretKey: String = System.getenv("STRIPE_SECRET_KEY") ?: ""
 
     constructor(){
-        println("\n\n\n\n\n\n\n")
+        println("\n\n\n\nSTRIPE\n\n\n")
         println(stripeSecretKey)
         println("\n\n\n\n\n\n\n")
         Stripe.apiKey = stripeSecretKey

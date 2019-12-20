@@ -10,19 +10,20 @@ import com.auth0.jwt.exceptions.JWTVerificationException
 
 @Service
 class JwtService {
-    private val log = LoggerFactory.getLogger(this.javaClass.name)
-
-    @Value("\${APP_JWT_SECRET}")
-    private val jwtSecret: String = ""
-
-    @Value("\${APP_MERCHANT_JWT_SECRET}")
-    private val merchantJwtSecret: String = ""
+    private val jwtSecret: String = System.getenv("APP_JWT_SECRET") ?: ""
+    private val merchantJwtSecret: String = System.getenv("APP_MERCHANT_JWT_SECRET") ?: ""
 
     private val jwtIssuer = "demo"
     private val jwtAccessLifetime = 10 * 60 // 10 minutes
     private val jwtRefreshLifetime = 8 * 60 * 60 // 8 hours
     private val jwtAlgorithm by lazy { Algorithm.HMAC256(jwtSecret) }
     private val merchantJwtAlgorithm by lazy { Algorithm.HMAC256(merchantJwtSecret) }
+
+    constructor(){
+        println("\n\n\n\nJWT in auth\n\n\n")
+        println(jwtSecret)
+        println("\n\n\n\n\n\n\n")
+    }
 
     private val jwtVerifier by lazy {
         JWT.require(jwtAlgorithm)
