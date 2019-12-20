@@ -109,7 +109,7 @@ export default function App() {
         </Button>
       </Typography>
 
-      <Paper>
+      <Paper className="MyPaper">
         {alertProps && (
           <AlertDialog
             title={alertProps.title}
@@ -121,64 +121,77 @@ export default function App() {
         )}
 
         <br />
-        <Grid
-          container={true}
-          direction="row"
-          justify="space-evenly"
-          alignItems="center"
-        >
-          {items.map((item: Product) => (
-            <Grid item={true} key={item.id}>
-              <Card className={isBiggerMode ? "biggerCard" : "myCard"}>
-                <CardActionArea>
-                  <CardMedia
-                    image={
-                      item.image
-                        ? "http://localhost:9000/images/" + item.image
-                        : "//cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_large.png"
-                    }
-                    style={{ height: 140 }}
-                  />
-                  <CardContent>
-                    <Typography gutterBottom={true} variant="h5" component="h2">
-                      {item.name.length > getNameMaxTextLength()
-                        ? `${item.name.substring(0, getNameMaxTextLength())}...`
-                        : item.name}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      component="p"
+        {items != null ? (
+          <Grid
+            container={true}
+            direction="row"
+            justify="space-evenly"
+            alignItems="center"
+          >
+            {items.map((item: Product) => (
+              <Grid item={true} key={item.id}>
+                <Card className={isBiggerMode ? "biggerCard" : "myCard"}>
+                  <CardActionArea>
+                    <CardMedia
+                      image={
+                        item.image
+                          ? "http://localhost:9000/images/" + item.image
+                          : "//cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_large.png"
+                      }
+                      style={{ height: 140 }}
+                    />
+                    <CardContent>
+                      <Typography
+                        gutterBottom={true}
+                        variant="h5"
+                        component="h2"
+                      >
+                        {item.name.length > getNameMaxTextLength()
+                          ? `${item.name.substring(
+                              0,
+                              getNameMaxTextLength()
+                            )}...`
+                          : item.name}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        component="p"
+                      >
+                        {item.description.length > getDescriptionMaxTextLength()
+                          ? `${item.description.substring(
+                              0,
+                              getDescriptionMaxTextLength()
+                            )}...`
+                          : item.description}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        component="p"
+                      >
+                        ${item.price}
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
+                  <CardActions>
+                    <Button
+                      size="small"
+                      color="primary"
+                      onClick={addProductToCart(item)}
                     >
-                      {item.description.length > getDescriptionMaxTextLength()
-                        ? `${item.description.substring(
-                            0,
-                            getDescriptionMaxTextLength()
-                          )}...`
-                        : item.description}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      component="p"
-                    >
-                      ${item.price}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-                <CardActions>
-                  <Button
-                    size="small"
-                    color="primary"
-                    onClick={addProductToCart(item)}
-                  >
-                    <AddShoppingCartIcon /> Add to Cart
-                  </Button>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+                      <AddShoppingCartIcon /> Add to Cart
+                    </Button>
+                  </CardActions>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <Typography variant="h5" component="h5">
+            No Products available now.
+          </Typography>
+        )}
       </Paper>
     </Container>
   );

@@ -219,7 +219,7 @@ export default function ManageProduct() {
     <Container>
       <CssBaseline />
 
-      <Paper>
+      <Paper className="MyPaper">
         {alertProps && (
           <AlertDialog
             title={alertProps.title}
@@ -250,70 +250,77 @@ export default function ManageProduct() {
         )}
 
         <br />
-        <Grid
-          container={true}
-          direction="row"
-          justify="space-evenly"
-          alignItems="center"
-        >
-          {items.map(
-            (item: Product) =>
-              userid === item.ownerID && (
-                <Grid item={true} key={item.id}>
-                  <Card className="myCard">
-                    <CardActionArea>
-                      {item.image && (
-                        <CardMedia
-                          image={"http://localhost:9000/images/" + item.image}
-                          style={{ height: 140 }}
-                        />
-                      )}
-                      <CardContent>
-                        <Typography
-                          gutterBottom={true}
-                          variant="h5"
-                          component="h2"
-                        >
-                          {item.name}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          component="p"
-                        >
-                          {item.description}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          component="p"
-                        >
-                          ${item.price}
-                        </Typography>
-                      </CardContent>
-                    </CardActionArea>
-                    <CardActions>
-                      <Button
-                        size="small"
-                        color="secondary"
-                        onClick={deleteProduct(item.id)}
-                      >
-                        <DeleteForeverIcon /> Delete Product
-                      </Button>
 
-                      <Button
-                        size="small"
-                        color="primary"
-                        onClick={updateProduct(item)}
-                      >
-                        <UpdateIcon /> Update Product
-                      </Button>
-                    </CardActions>
-                  </Card>
-                </Grid>
-              )
-          )}
-        </Grid>
+        {items != null ? (
+          <Grid
+            container={true}
+            direction="row"
+            justify="space-evenly"
+            alignItems="center"
+          >
+            {items.map(
+              (item: Product) =>
+                userid === item.ownerID && (
+                  <Grid item={true} key={item.id}>
+                    <Card className="myCard">
+                      <CardActionArea>
+                        {item.image && (
+                          <CardMedia
+                            image={"http://localhost:9000/images/" + item.image}
+                            style={{ height: 140 }}
+                          />
+                        )}
+                        <CardContent>
+                          <Typography
+                            gutterBottom={true}
+                            variant="h5"
+                            component="h2"
+                          >
+                            {item.name}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            color="textSecondary"
+                            component="p"
+                          >
+                            {item.description}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            color="textSecondary"
+                            component="p"
+                          >
+                            ${item.price}
+                          </Typography>
+                        </CardContent>
+                      </CardActionArea>
+                      <CardActions>
+                        <Button
+                          size="small"
+                          color="secondary"
+                          onClick={deleteProduct(item.id)}
+                        >
+                          <DeleteForeverIcon /> Delete Product
+                        </Button>
+
+                        <Button
+                          size="small"
+                          color="primary"
+                          onClick={updateProduct(item)}
+                        >
+                          <UpdateIcon /> Update Product
+                        </Button>
+                      </CardActions>
+                    </Card>
+                  </Grid>
+                )
+            )}
+          </Grid>
+        ) : (
+          <Typography variant="h5" component="h5">
+            You have no product
+          </Typography>
+        )}
       </Paper>
     </Container>
   );
