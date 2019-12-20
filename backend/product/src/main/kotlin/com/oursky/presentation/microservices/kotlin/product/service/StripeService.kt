@@ -13,9 +13,6 @@ class StripeService {
     private val stripeSecretKey: String = System.getenv("STRIPE_SECRET_KEY") ?: ""
 
     constructor(){
-        println("\n\n\n\nSTRIPE\n\n\n")
-        println(stripeSecretKey)
-        println("\n\n\n\n\n\n\n")
         Stripe.apiKey = stripeSecretKey
     }
 
@@ -44,7 +41,7 @@ class StripeService {
         inventory["type"] = "infinite"
         val params = HashMap<String, Any>()
         params["attributes"] = attributes
-        params["price"] = (price * 1000).toInt()
+        params["price"] = (price * 100).toInt()
         params["currency"] = "hkd"
         params["inventory"] = inventory
         params["product"] = productID
