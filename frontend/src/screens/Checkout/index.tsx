@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   List,
   Divider,
@@ -13,6 +13,7 @@ import {
   Paper,
   CssBaseline,
 } from "@material-ui/core";
+import AlertDialog from "../../components/AlertDialog";
 import { StripeProvider } from "react-stripe-elements";
 import DeleteIcon from "@material-ui/icons/Delete";
 
@@ -24,9 +25,12 @@ export default function Checkout() {
   const [cart, setCart] = useState<Cart>({});
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [updated, setUpdated] = useState<number>(0);
+  const [checkoutMsg, setCheckoutMsg] = useState<string>("");
 
   const NAME_MAX_LENGTH = 15;
   const DESCRIPTION_MAX_LENGTH = 29;
+
+  const setCheckoutMsgNull = useCallback(() => setCheckoutMsg(""), []);
 
   useEffect(() => {
     const storageCart = localStorage.getItem("cart");
@@ -38,7 +42,6 @@ export default function Checkout() {
   }, [updated]);
 
   function deleteProductFromCart(id: string) {
-    console.log(cart[id]);
     delete cart[id];
     localStorage.setItem("cart", JSON.stringify(cart));
     setCart(cart);
@@ -47,7 +50,12 @@ export default function Checkout() {
 
   const handleSubmit = () => {
     const items: Array<stripe.StripeCheckoutItem> = [];
-    Object.keys(cart).forEach((v: string) => {
+    const cartKys = Object.keys(cart);
+    if (cartKys.length === 0) {
+      setCheckoutMsg("Your shopping cart is empty.");
+      return;
+    }
+    cartKys.forEach((v: string) => {
       items.push({
         sku: cart[v].stripeSKUID,
         quantity: 1,
@@ -57,14 +65,16 @@ export default function Checkout() {
       .Stripe("pk_test_zhH6ESOFrEJllkw6M7rt99EX00ESkJjbGs")
       .redirectToCheckout({
         items: items,
-        successUrl: "http://localhost:3000/checkout",
-        cancelUrl: "http://localhost:3000/checkout",
+        successUrl: "http://localhost:3000?success=true",
+        cancelUrl: "http://localhost:3000?cancelled=true",
+        billingAddressCollection: "required",
       })
       .then((a: stripe.StripeRedirectResponse) => {
         console.log("Done: ", a);
       })
       .catch((e: Error) => {
-        console.log("EEERRRR", e);
+        console.log("Error in Stripe", e);
+        setCheckoutMsg(e.message);
       });
   };
 
@@ -76,6 +86,15 @@ export default function Checkout() {
     <StripeProvider apiKey="pk_test_6pRNASCoBOKtIshFeQd4XMUh">
       <Container maxWidth="sm">
         <CssBaseline />
+
+        <AlertDialog
+          redirectTo={undefined}
+          title="Error"
+          message={checkoutMsg}
+          isOpen={!!checkoutMsg}
+          onCloseClick={setCheckoutMsgNull}
+        />
+
         <Paper className="mypaper">
           <Typography variant="h4">Checkout</Typography>
           <List>

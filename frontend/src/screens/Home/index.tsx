@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import qs from "query-string";
 
 import {
   Card,
@@ -13,6 +14,7 @@ import {
   CssBaseline,
   Grid,
 } from "@material-ui/core";
+import { RouteProps } from "react-router-dom";
 
 import AlertDialog from "../../components/AlertDialog";
 import Loading from "../../components/Loading";
@@ -24,7 +26,7 @@ import "./Home.scss";
 import APIService from "../../APIService";
 import { AlertDialogProps } from "../../interfaces/DialogsProps";
 
-export default function App() {
+export default function App(props: RouteProps) {
   const [isBiggerMode, setIsBiggerMode] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [items, setItems] = useState<Product[]>([]);
@@ -72,10 +74,37 @@ export default function App() {
       });
   }, [closePopup]);
 
+  function deleteAllProductFromCart() {
+    localStorage.setItem("cart", "");
+    setCart({});
+  }
+
   useEffect(() => {
     updateStateItems();
     updateStorageCart();
-  }, [updateStateItems, updateStorageCart]);
+
+    if (typeof props !== "undefined" && typeof props.location !== "undefined") {
+      const queryStr = qs.parse(props.location.search);
+      if (typeof queryStr.success !== "undefined") {
+        setAlertProps({
+          title: "Order received Successfully",
+          message: "Thanks for ordering.\nYour order will be dispatched soon.",
+          isOpen: true,
+          onCloseClick: closePopup,
+          redirectTo: undefined,
+        });
+        deleteAllProductFromCart();
+      } else if (typeof queryStr.cancelled !== "undefined") {
+        setAlertProps({
+          title: "Order Cancelled",
+          message: "You cancelled the order.",
+          isOpen: true,
+          onCloseClick: closePopup,
+          redirectTo: undefined,
+        });
+      }
+    }
+  }, [updateStateItems, updateStorageCart, props, closePopup]);
 
   const addProductToCart = useCallback(
     (product: Product) => () => {
