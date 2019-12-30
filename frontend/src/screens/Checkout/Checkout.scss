@@ -20,6 +20,11 @@
   margin-top: 10px;
 }
 
+.payBtn:hover {
+  background-color: #4a56e4;
+  cursor: pointer;
+}
+
 .StripeElement.IdealBankElement,
 .StripeElement.PaymentRequestButton {
   padding: 0;
