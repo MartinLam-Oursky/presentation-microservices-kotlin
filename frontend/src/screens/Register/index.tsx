@@ -9,7 +9,6 @@ import {
   CssBaseline,
 } from "@material-ui/core";
 import AlertDialog from "../../components/AlertDialog";
-import "./Register.scss";
 import Cookies from "../../Cookies";
 import { TIME, getTimeAfter } from "../../Utils";
 import RegisterData from "../../interfaces/RegisterData";
@@ -82,7 +81,7 @@ export default function Register() {
         onCloseClick={setSubmitResultEmpty}
       />
 
-      <Paper className="MyPaper">
+      <Paper className="mypaper">
         <Typography variant="h4">
           {isMerchant ? "Merchant" : "Customer"} Register
         </Typography>

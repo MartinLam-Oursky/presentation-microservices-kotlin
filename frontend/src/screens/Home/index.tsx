@@ -109,7 +109,7 @@ export default function App() {
         </Button>
       </Typography>
 
-      <Paper className="MyPaper">
+      <Paper className="mypaper">
         {alertProps && (
           <AlertDialog
             title={alertProps.title}
@@ -130,7 +130,7 @@ export default function App() {
           >
             {items.map((item: Product) => (
               <Grid item={true} key={item.id}>
-                <Card className={isBiggerMode ? "biggerCard" : "myCard"}>
+                <Card className={isBiggerMode ? "biggercard" : "mycard"}>
                   <CardActionArea>
                     <CardMedia
                       image={

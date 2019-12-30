@@ -7,13 +7,11 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 
-import "./Loading.scss";
-
 export default function Loading() {
   return (
     <Container>
       <CssBaseline />
-      <Paper className="myPaper">
+      <Paper className="mypaper">
         <CircularProgress />
       </Paper>
     </Container>

@@ -219,7 +219,7 @@ export default function ManageProduct() {
     <Container>
       <CssBaseline />
 
-      <Paper className="MyPaper">
+      <Paper className="mypaper">
         {alertProps && (
           <AlertDialog
             title={alertProps.title}

@@ -21,8 +21,6 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import Loading from "../../components/Loading";
 import EmptyShoppingCart from "../EmptyShoppingCart";
 
-import "./ShoppingCart.scss";
-
 export default function ShoppingCart() {
   const [cart, setCart] = useState<Cart>({});
   const [isLoaded, setIsLoaded] = useState<boolean>(false);

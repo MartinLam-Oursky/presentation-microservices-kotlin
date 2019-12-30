@@ -5,7 +5,7 @@ export default function EmptyShoppingCart() {
   return (
     <Container maxWidth="sm">
       <CssBaseline />
-      <Paper className="MyPaper">
+      <Paper className="mypaper">
         <Typography variant="h5" component="h5">
           Your Shopping Cart is Empty !
         </Typography>

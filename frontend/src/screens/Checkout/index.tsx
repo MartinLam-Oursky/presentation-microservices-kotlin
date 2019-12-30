@@ -76,7 +76,7 @@ export default function Checkout() {
     <StripeProvider apiKey="pk_test_6pRNASCoBOKtIshFeQd4XMUh">
       <Container maxWidth="sm">
         <CssBaseline />
-        <Paper className="MyPaper">
+        <Paper className="mypaper">
           <Typography variant="h4">Checkout</Typography>
           <List>
             {Object.keys(cart).map((val: string) => {

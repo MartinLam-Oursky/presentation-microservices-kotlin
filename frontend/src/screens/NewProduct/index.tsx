@@ -15,8 +15,6 @@ import { AddProductResult } from "../../interfaces/APIResponses";
 import NewProductData from "../../interfaces/NewProductData";
 import Cookies from "../../Cookies";
 
-import "./NewProduct.scss";
-
 export default function NewProduct() {
   const [alertProps, setAlertProps] = useState<AlertDialogProps | undefined>();
   const [newProductData, setNewProductData] = useState<NewProductData>({
@@ -139,7 +137,7 @@ export default function NewProduct() {
         />
       )}
 
-      <Paper className="MyPaper">
+      <Paper className="mypaper">
         <Typography variant="h4">Add New Product</Typography>
 
         <br />

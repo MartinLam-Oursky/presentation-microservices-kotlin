@@ -13,7 +13,7 @@ export default function Login() {
     <Container maxWidth="xs">
       <CssBaseline />
 
-      <Paper className="MyPaper">
+      <Paper className="mypaper">
         <Typography variant="h4">Forgot Password</Typography>
 
         <br />
